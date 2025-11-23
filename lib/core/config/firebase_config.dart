@@ -1,0 +1,2 @@
+// Firebase configuration and initialization
+

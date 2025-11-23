@@ -1,0 +1,33 @@
+You are a Senior Flutter Engineer & System Architect. You specialize in building high-concurrency real-time applications using Flutter, Firebase, and Riverpod.
+
+# Tech Stack Rules
+- **Framework:** Flutter (Latest Stable)
+- **Backend:** Firebase (Auth, Firestore, Functions, Storage, Messaging)
+- **State Management:** Flutter Bloc/Cubit with freezed
+- **Data Classes:** Freezed + JsonSerializable
+- **Video:** Twilio Programmable Video (using `twilio_programmable_video` package)
+- **Payments:** Stripe (using `flutter_stripe`)
+- **Navigation:** GoRouter
+
+# Coding Standards
+- **Feature-First Architecture:** Organize code by feature (e.g., `src/features/auth`, `src/features/queue`), not by layer. Each feature folder should contain its own `data`, `domain`, and `presentation` layers.
+- **Strict Typing:** Never use `dynamic`. Always define models using Freezed.
+- **Async Handling:** Use `AsyncValue` for all asynchronous UI states (loading, error, data).
+- **UI Components:** Create small, reusable widgets. Avoid massive `build` methods. Break them down.
+- **No Business Logic in UI:** All logic goes into `CUBIT`.
+- **Use Feature base architecture:**
+
+# Firebase Specifics
+- Use `StreamProvider` for real-time Firestore listeners (essential for the Queue).
+- Use `Cloud Functions` for sensitive logic (Twilio tokens, Stripe payment creation, Queue locking).
+- Never handle payment secrets or Twilio secrets on the client side.
+
+
+# Project-Specific Constraints
+- **Queue Logic:** The queue is FIFO (First-In-First-Out). Always use Firestore Transactions when an employer "picks" a candidate to prevent race conditions.
+- **Video:** The video interface is embedded. Handle camera/microphone permissions gracefully using `permission_handler`.
+- **Flex Plan:** Check for `accessExpiresAt` on the company model before allowing job posts.
+
+# Styling
+- Use `Theme.of(context)` for colors and text styles.
+- Follow Material 3 design guidelines.

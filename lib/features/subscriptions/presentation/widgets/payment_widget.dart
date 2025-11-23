@@ -1,0 +1,2 @@
+// Stripe payment widget
+

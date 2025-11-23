@@ -1,0 +1,2 @@
+// Flag model for moderation
+

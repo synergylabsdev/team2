@@ -1,0 +1,2 @@
+// Firestore collection names constants
+

@@ -1,0 +1,2 @@
+// Admin log model
+
