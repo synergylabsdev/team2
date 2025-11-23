@@ -27,7 +27,9 @@ class _SubscriptionPageContent extends StatelessWidget {
         child: BlocBuilder<SubscriptionCubit, SubscriptionState>(
           builder: (context, state) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width < 600 ? 16 : 24,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -190,106 +192,197 @@ class _SubscriptionPageContent extends StatelessWidget {
   }
 
   Widget _buildMonthlyPlans(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: _PlanCard(
-                icon: Icons.access_time,
-                title: 'Flex',
-                price: '\$59',
-                period: '/ day',
-                detail: '1 Job / 10 Interviews',
-                features: const [
-                  '24-hour access',
-                  '1 job post',
-                  'Up to 10 interviews',
-                  'Basic candidate notes',
-                ],
-                buttonText: 'Get started',
-                onPressed: () {
-                  context.read<SubscriptionCubit>().purchasePlan('flex');
-                },
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+
+    if (isMobile) {
+      // Mobile: Stack cards vertically
+      return Column(
+        children: [
+          _PlanCard(
+            icon: Icons.access_time,
+            title: 'Flex',
+            price: '\$59',
+            period: '/ day',
+            detail: '1 Job / 10 Interviews',
+            features: const [
+              '24-hour access',
+              '1 job post',
+              'Up to 10 interviews',
+              'Basic candidate notes',
+            ],
+            buttonText: 'Get started',
+            onPressed: () {
+              context.read<SubscriptionCubit>().purchasePlan('flex');
+            },
+          ),
+          const SizedBox(height: 16),
+          _PlanCard(
+            icon: Icons.star,
+            title: 'Starter',
+            price: '\$125',
+            period: '/ month',
+            detail: '50 Interviews',
+            features: const [
+              'Unlimited job posts',
+              '50 interviews per month',
+              'Logo visible to seekers',
+              'Basic analytics',
+              '3 pre-qualification questions',
+            ],
+            buttonText: 'Get started',
+            onPressed: () {
+              context.read<SubscriptionCubit>().purchasePlan('starter');
+            },
+          ),
+          const SizedBox(height: 16),
+          _PlanCard(
+            icon: Icons.bolt,
+            title: 'Pro',
+            price: '\$299',
+            period: '/ month',
+            detail: '200 Interviews',
+            features: const [
+              'Unlimited job posts',
+              '200 interviews per month',
+              'Advanced analytics dashboard',
+              'Sponsorship discounts',
+              '10 pre-qualification questions',
+            ],
+            buttonText: 'Get started',
+            onPressed: () {
+              context.read<SubscriptionCubit>().purchasePlan('pro');
+            },
+          ),
+          const SizedBox(height: 16),
+          _PlanCard(
+            icon: Icons.business,
+            title: 'Enterprise',
+            price: 'Custom pricing',
+            period: '',
+            detail: 'Unlimited',
+            features: const [
+              'Custom number of interviews',
+              'Multi-user employer access',
+              'Full analytics suite',
+              'Unlimited pre-qual questions',
+            ],
+            buttonText: 'Contact Us',
+            onPressed: () {
+              context.read<SubscriptionCubit>().purchasePlan('enterprise');
+            },
+          ),
+        ],
+      );
+    } else {
+      // Tablet/Desktop: Show 2 cards per row
+      return Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: _PlanCard(
+                  icon: Icons.access_time,
+                  title: 'Flex',
+                  price: '\$59',
+                  period: '/ day',
+                  detail: '1 Job / 10 Interviews',
+                  features: const [
+                    '24-hour access',
+                    '1 job post',
+                    'Up to 10 interviews',
+                    'Basic candidate notes',
+                  ],
+                  buttonText: 'Get started',
+                  onPressed: () {
+                    context.read<SubscriptionCubit>().purchasePlan('flex');
+                  },
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _PlanCard(
-                icon: Icons.star,
-                title: 'Starter',
-                price: '\$125',
-                period: '/ month',
-                detail: '50 Interviews',
-                features: const [
-                  'Unlimited job posts',
-                  '50 interviews per month',
-                  'Logo visible to seekers',
-                  'Basic analytics',
-                  '3 pre-qualification questions',
-                ],
-                buttonText: 'Get started',
-                onPressed: () {
-                  context.read<SubscriptionCubit>().purchasePlan('starter');
-                },
+              const SizedBox(width: 16),
+              Expanded(
+                child: _PlanCard(
+                  icon: Icons.star,
+                  title: 'Starter',
+                  price: '\$125',
+                  period: '/ month',
+                  detail: '50 Interviews',
+                  features: const [
+                    'Unlimited job posts',
+                    '50 interviews per month',
+                    'Logo visible to seekers',
+                    'Basic analytics',
+                    '3 pre-qualification questions',
+                  ],
+                  buttonText: 'Get started',
+                  onPressed: () {
+                    context.read<SubscriptionCubit>().purchasePlan('starter');
+                  },
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: _PlanCard(
-                icon: Icons.bolt,
-                title: 'Pro',
-                price: '\$299',
-                period: '/ month',
-                detail: '200 Interviews',
-                features: const [
-                  'Unlimited job posts',
-                  '200 interviews per month',
-                  'Advanced analytics dashboard',
-                  'Sponsorship discounts',
-                  '10 pre-qualification questions',
-                ],
-                buttonText: 'Get started',
-                onPressed: () {
-                  context.read<SubscriptionCubit>().purchasePlan('pro');
-                },
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _PlanCard(
+                  icon: Icons.bolt,
+                  title: 'Pro',
+                  price: '\$299',
+                  period: '/ month',
+                  detail: '200 Interviews',
+                  features: const [
+                    'Unlimited job posts',
+                    '200 interviews per month',
+                    'Advanced analytics dashboard',
+                    'Sponsorship discounts',
+                    '10 pre-qualification questions',
+                  ],
+                  buttonText: 'Get started',
+                  onPressed: () {
+                    context.read<SubscriptionCubit>().purchasePlan('pro');
+                  },
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _PlanCard(
-                icon: Icons.business,
-                title: 'Enterprise',
-                price: 'Custom pricing',
-                period: '',
-                detail: 'Unlimited',
-                features: const [
-                  'Custom number of interviews',
-                  'Multi-user employer access',
-                  'Full analytics suite',
-                  'Unlimited pre-qual questions',
-                ],
-                buttonText: 'Contact Us',
-                onPressed: () {
-                  context.read<SubscriptionCubit>().purchasePlan('enterprise');
-                },
+              const SizedBox(width: 16),
+              Expanded(
+                child: _PlanCard(
+                  icon: Icons.business,
+                  title: 'Enterprise',
+                  price: 'Custom pricing',
+                  period: '',
+                  detail: 'Unlimited',
+                  features: const [
+                    'Custom number of interviews',
+                    'Multi-user employer access',
+                    'Full analytics suite',
+                    'Unlimited pre-qual questions',
+                  ],
+                  buttonText: 'Contact Us',
+                  onPressed: () {
+                    context.read<SubscriptionCubit>().purchasePlan(
+                      'enterprise',
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
-    );
+            ],
+          ),
+        ],
+      );
+    }
   }
 
   Widget _buildAddOns(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _AddOnCard(
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+
+    if (isMobile) {
+      // Mobile: Stack cards vertically
+      return Column(
+        children: [
+          _AddOnCard(
             title: 'Extra job postings',
             price: '\$19',
             description: 'One posting',
@@ -301,10 +394,8 @@ class _SubscriptionPageContent extends StatelessWidget {
               );
             },
           ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _AddOnCard(
+          const SizedBox(height: 16),
+          _AddOnCard(
             title: 'Extra interview bundles',
             price: '\$25',
             description: '10 interviews',
@@ -315,10 +406,8 @@ class _SubscriptionPageContent extends StatelessWidget {
               );
             },
           ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _AddOnCard(
+          const SizedBox(height: 16),
+          _AddOnCard(
             title: 'Priority queue boost',
             price: '\$9 / month',
             description: '10 interviews',
@@ -329,9 +418,59 @@ class _SubscriptionPageContent extends StatelessWidget {
               );
             },
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    } else {
+      // Tablet/Desktop: Show cards in a row
+      return Row(
+        children: [
+          Expanded(
+            child: _AddOnCard(
+              title: 'Extra job postings',
+              price: '\$19',
+              description: 'One posting',
+              benefit:
+                  'Buy additional job slots when your plan limit is reached.',
+              onPressed: () {
+                context.read<SubscriptionCubit>().purchaseAddOn(
+                  'extra_job_posting',
+                );
+              },
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: _AddOnCard(
+              title: 'Extra interview bundles',
+              price: '\$25',
+              description: '10 interviews',
+              benefit:
+                  'Add more interview credits without upgrading your plan.',
+              onPressed: () {
+                context.read<SubscriptionCubit>().purchaseAddOn(
+                  'extra_interview_bundle',
+                );
+              },
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: _AddOnCard(
+              title: 'Priority queue boost',
+              price: '\$9 / month',
+              description: '10 interviews',
+              benefit:
+                  'Give your jobs higher visibility in the interview queue.',
+              onPressed: () {
+                context.read<SubscriptionCubit>().purchaseAddOn(
+                  'priority_queue_boost',
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    }
   }
 }
 
@@ -359,7 +498,9 @@ class _PlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(
+        MediaQuery.of(context).size.width < 600 ? 16 : 20,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -377,9 +518,9 @@ class _PlanCard extends StatelessWidget {
             children: [
               Text(
                 price,
-                style: Theme.of(
-                  context,
-                ).textTheme.displayLarge?.copyWith(fontSize: 28),
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  fontSize: MediaQuery.of(context).size.width < 600 ? 24 : 28,
+                ),
               ),
               if (period.isNotEmpty)
                 Padding(
@@ -449,7 +590,9 @@ class _AddOnCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(
+        MediaQuery.of(context).size.width < 600 ? 16 : 20,
+      ),
       decoration: BoxDecoration(
         color: Colors.grey[50],
         borderRadius: BorderRadius.circular(16),
@@ -461,9 +604,9 @@ class _AddOnCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             price,
-            style: Theme.of(
-              context,
-            ).textTheme.displayLarge?.copyWith(fontSize: 28),
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+              fontSize: MediaQuery.of(context).size.width < 600 ? 24 : 28,
+            ),
           ),
           const SizedBox(height: 4),
           Text(description, style: Theme.of(context).textTheme.bodyMedium),
