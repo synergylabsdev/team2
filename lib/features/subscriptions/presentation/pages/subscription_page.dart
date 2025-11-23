@@ -2,6 +2,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:team2/core/theme/app_theme.dart';
 import 'package:team2/features/auth/presentation/pages/home_page.dart';
+import 'package:team2/features/employers/presentation/pages/employer_dashboard_page.dart';
 import 'package:team2/features/subscriptions/presentation/cubit/subscription_cubit.dart';
 import 'package:team2/features/subscriptions/presentation/cubit/subscription_state.dart';
 
@@ -165,7 +166,9 @@ class _SubscriptionPageContentState extends State<_SubscriptionPageContent> {
               }
               // Navigate to home page
               Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(
+                  builder: (context) => const EmployerDashboardPage(),
+                ),
                 (route) => false,
               );
             },

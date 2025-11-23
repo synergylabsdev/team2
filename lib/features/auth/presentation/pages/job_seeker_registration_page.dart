@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:team2/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:team2/features/auth/presentation/cubit/auth_state.dart';
 import 'package:team2/features/auth/presentation/pages/home_page.dart';
+import 'package:team2/features/job_seekers/presentation/pages/job_seeker_page.dart';
 
 class JobSeekerRegistrationPage extends StatefulWidget {
   final String email;
@@ -339,7 +340,7 @@ class _JobSeekerRegistrationPageState extends State<JobSeekerRegistrationPage> {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const HomePage(),
+                            builder: (context) => const JobSeekerMainPage(),
                           ),
                           (route) => false,
                         );

@@ -4,6 +4,7 @@ import 'package:team2/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:team2/features/auth/presentation/cubit/auth_state.dart';
 import 'package:team2/features/auth/presentation/pages/home_page.dart';
 import 'package:team2/features/auth/presentation/pages/register_page.dart';
+import 'package:team2/features/job_seekers/presentation/pages/job_seeker_page.dart';
 import 'package:team2/features/subscriptions/presentation/pages/subscription_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -137,13 +138,23 @@ class _LoginPageState extends State<LoginPage> {
                     state.whenOrNull(
                       authenticated: (user) {
                         // Navigate to home page
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubscriptionPage(),
-                          ),
-                          (route) => false,
-                        );
+                        if (widget.role == 'employer') {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SubscriptionPage(),
+                            ),
+                            (route) => false,
+                          );
+                        } else {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const JobSeekerMainPage(),
+                            ),
+                            (route) => false,
+                          );
+                        }
                       },
                       error: (message) {
                         ScaffoldMessenger.of(context).showSnackBar(
