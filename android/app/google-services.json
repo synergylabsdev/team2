@@ -1,0 +1,144 @@
+{
+  "project_info": {
+    "project_number": "712622845147",
+    "firebase_url": "https://elektron-poliklinika-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "elektron-poliklinika",
+    "storage_bucket": "elektron-poliklinika.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712622845147:android:ecdf21ef547b7aeba770fe",
+        "android_client_info": {
+          "package_name": "com.example.simma_riverpod"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7hh9xYJGtlsSQTvJjzKQlrWPnBaxh1uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712622845147:android:ed23d4c3447d1fc9a770fe",
+        "android_client_info": {
+          "package_name": "com.example.team2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7hh9xYJGtlsSQTvJjzKQlrWPnBaxh1uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712622845147:android:029ffb0f425c068aa770fe",
+        "android_client_info": {
+          "package_name": "com.example.tep_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7hh9xYJGtlsSQTvJjzKQlrWPnBaxh1uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712622845147:android:6024f5a19ab1d502a770fe",
+        "android_client_info": {
+          "package_name": "com.example.webrtc_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7hh9xYJGtlsSQTvJjzKQlrWPnBaxh1uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712622845147:android:d7ef99d9d02044a9a770fe",
+        "android_client_info": {
+          "package_name": "com.mycompany.lasergrid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7hh9xYJGtlsSQTvJjzKQlrWPnBaxh1uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712622845147:android:c0d10dfbd5011bfea770fe",
+        "android_client_info": {
+          "package_name": "dev.flutterexplained.webrtc_tutorial"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7hh9xYJGtlsSQTvJjzKQlrWPnBaxh1uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712622845147:android:393c9c8358ca788ea770fe",
+        "android_client_info": {
+          "package_name": "uz.diyorjon.flutter_web_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7hh9xYJGtlsSQTvJjzKQlrWPnBaxh1uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
