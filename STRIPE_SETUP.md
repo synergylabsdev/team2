@@ -135,29 +135,57 @@ exports.createAddOnCheckoutSession = functions.https.onCall(async (data, context
     );
   }
 
-  const { userId, addOnType, email } = data;
+  const { userId, addOnType, email, jobPostings, interviewCredits } = data;
 
   try {
-    // Get or create Stripe customer (similar to above)
-    // ... (same customer creation logic)
+    // Get or create Stripe customer (similar to subscription flow)
+    let customerId;
+    const userDoc = await admin.firestore()
+      .collection('employers')
+      .doc(userId)
+      .get();
+
+    if (userDoc.exists && userDoc.data().subscription?.stripeCustomerId) {
+      customerId = userDoc.data().subscription.stripeCustomerId;
+    } else {
+      const customer = await stripe.customers.create({
+        email: email,
+        metadata: { userId: userId },
+      });
+      customerId = customer.id;
+      await admin.firestore()
+        .collection('employers')
+        .doc(userId)
+        .set({
+          subscription: { stripeCustomerId: customerId },
+        }, { merge: true });
+    }
 
     // Create checkout session for one-time payment
     // You'll need to create price IDs for add-ons in Stripe Dashboard
+    const priceIds = {
+      'extra_job_posting': 'price_extra_job_posting', // Replace with actual price ID
+      'extra_interview_bundle': 'price_extra_interview_bundle', // Replace with actual price ID
+      'priority_queue_boost': 'price_priority_queue_boost', // Replace with actual price ID
+    };
+
+    const priceId = priceIds[addOnType];
+    if (!priceId) {
+      throw new Error(`Invalid add-on type: ${addOnType}`);
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
       mode: 'payment',
-      line_items: [
-        {
-          price: 'price_addon_extra_job_posting', // Replace with actual price ID
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: priceId, quantity: 1 }],
       success_url: 'https://your-app.com/success?session_id={CHECKOUT_SESSION_ID}',
       cancel_url: 'https://your-app.com/cancel',
       metadata: {
         userId: userId,
         addOnType: addOnType,
+        jobPostings: jobPostings.toString(),
+        interviewCredits: interviewCredits.toString(),
       },
     });
 
@@ -235,7 +263,53 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
     case 'customer.subscription.deleted':
       const subscription = event.data.object;
       // Update subscription status in Firestore
-      // ...
+      await admin.firestore()
+        .collection('employers')
+        .doc(subscription.metadata.userId)
+        .update({
+          'subscription.status': subscription.status,
+          'subscription.currentPeriodEnd': subscription.current_period_end,
+          'lastWebhookUpdate': admin.firestore.FieldValue.serverTimestamp(),
+        });
+      break;
+
+    case 'checkout.session.completed':
+      const session = event.data.object;
+      const userId = session.metadata.userId;
+      
+      // Handle add-on purchases (one-time payments)
+      if (session.mode === 'payment' && session.metadata.addOnType) {
+        const jobPostings = parseInt(session.metadata.jobPostings || '0');
+        const interviewCredits = parseInt(session.metadata.interviewCredits || '0');
+        
+        // Increment employer credits using transaction
+        const employerRef = admin.firestore().collection('employers').doc(userId);
+        await admin.firestore().runTransaction(async (transaction) => {
+          const doc = await transaction.get(employerRef);
+          if (doc.exists) {
+            const currentJobPostings = (doc.data().jobPostingSlots || 0);
+            const currentInterviewCredits = (doc.data().interviewCredits || 0);
+            
+            transaction.update(employerRef, {
+              jobPostingSlots: currentJobPostings + jobPostings,
+              interviewCredits: currentInterviewCredits + interviewCredits,
+              lastWebhookUpdate: admin.firestore.FieldValue.serverTimestamp(),
+            });
+          }
+        });
+      }
+      // Handle subscription purchases
+      else if (session.mode === 'subscription' && session.metadata.planType) {
+        await admin.firestore()
+          .collection('employers')
+          .doc(userId)
+          .update({
+            'subscription.stripeSubscriptionId': session.subscription,
+            'subscription.plan': session.metadata.planType,
+            'subscription.status': 'active',
+            'lastWebhookUpdate': admin.firestore.FieldValue.serverTimestamp(),
+          });
+      }
       break;
   }
 
