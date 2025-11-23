@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:team2/core/theme/app_theme.dart';
+import 'package:team2/features/auth/presentation/pages/home_page.dart';
 import 'package:team2/features/subscriptions/presentation/cubit/subscription_cubit.dart';
 import 'package:team2/features/subscriptions/presentation/cubit/subscription_state.dart';
 
@@ -16,66 +17,161 @@ class SubscriptionPage extends StatelessWidget {
   }
 }
 
-class _SubscriptionPageContent extends StatelessWidget {
+class _SubscriptionPageContent extends StatefulWidget {
   const _SubscriptionPageContent();
+
+  @override
+  State<_SubscriptionPageContent> createState() =>
+      _SubscriptionPageContentState();
+}
+
+class _SubscriptionPageContentState extends State<_SubscriptionPageContent> {
+  bool _dialogShown = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
-        child: BlocBuilder<SubscriptionCubit, SubscriptionState>(
-          builder: (context, state) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width < 600 ? 16 : 24,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 32),
-                  // Progress Indicator
-                  _buildProgressIndicator(context),
-                  const SizedBox(height: 32),
-                  // Title
-                  Text(
-                    'Plan Selection',
-                    style: Theme.of(context).textTheme.displayLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  // Subtitle
-                  Text(
-                    'Select the plan that best fits your recruitment needs.',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-                  // Billing Toggle
-                  _buildBillingToggle(context, state.isMonthlyBilling),
-                  const SizedBox(height: 32),
-                  // Plans or Add-ons
-                  if (state.isMonthlyBilling)
-                    _buildMonthlyPlans(context)
-                  else
-                    _buildAddOns(context),
-                  const SizedBox(height: 32),
-                  // Back Button
-                  Center(
-                    child: TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text(
-                        'ΓåÉ Back',
-                        style: Theme.of(context).textTheme.labelLarge,
+        child: BlocListener<SubscriptionCubit, SubscriptionState>(
+          listener: (context, state) {
+            // Listen for successful purchase
+            final cubit = context.read<SubscriptionCubit>();
+            if (cubit.purchaseSuccessful && !state.isLoading && !_dialogShown) {
+              _dialogShown = true;
+              // Show confirmation dialog
+              _showConfirmationDialog(context, state.isMonthlyBilling);
+            }
+          },
+          child: BlocBuilder<SubscriptionCubit, SubscriptionState>(
+            builder: (context, state) {
+              return SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width < 600 ? 16 : 24,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 32),
+                    // Progress Indicator
+                    _buildProgressIndicator(context),
+                    const SizedBox(height: 32),
+                    // Title
+                    Text(
+                      'Plan Selection',
+                      style: Theme.of(context).textTheme.displayLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    // Subtitle
+                    Text(
+                      'Select the plan that best fits your recruitment needs.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+                    // Billing Toggle
+                    _buildBillingToggle(context, state.isMonthlyBilling),
+                    const SizedBox(height: 32),
+                    // Error message display
+                    if (state.errorMessage != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.red[50],
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.red[300]!),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.red[700]),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  state.errorMessage!,
+                                  style: TextStyle(color: Colors.red[700]),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    // Plans or Add-ons
+                    if (state.isMonthlyBilling)
+                      _buildMonthlyPlans(context)
+                    else
+                      _buildAddOns(context),
+                    const SizedBox(height: 32),
+                    // Back Button
+                    Center(
+                      child: TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          'ΓåÉ Back',
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                ],
-              ),
-            );
-          },
+                    const SizedBox(height: 32),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
+      ),
+    );
+  }
+
+  void _showConfirmationDialog(BuildContext context, bool isMonthlyBilling) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green, size: 32),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Text(
+                'Purchase Successful!',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          isMonthlyBilling
+              ? 'Your subscription has been activated successfully. You can now start posting jobs and conducting interviews.'
+              : 'Your add-on purchase has been processed successfully. Your credits have been updated.',
+          style: const TextStyle(fontSize: 16),
+        ),
+        actions: [
+          FilledButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop(); // Close dialog
+              // Reset purchase flag
+              final cubit = context.read<SubscriptionCubit>();
+              cubit.resetPurchaseFlag();
+              // Reset dialog flag
+              if (mounted) {
+                setState(() {
+                  _dialogShown = false;
+                });
+              }
+              // Navigate to home page
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const HomePage()),
+                (route) => false,
+              );
+            },
+            child: const Text('Go to Home'),
+          ),
+        ],
       ),
     );
   }
@@ -511,29 +607,44 @@ class _PlanCard extends StatelessWidget {
         children: [
           Icon(icon, color: Theme.of(context).colorScheme.primary, size: 32),
           const SizedBox(height: 12),
-          Text(title, style: Theme.of(context).textTheme.labelLarge),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.labelLarge,
+            overflow: TextOverflow.ellipsis,
+          ),
           const SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                price,
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                  fontSize: MediaQuery.of(context).size.width < 600 ? 24 : 28,
+              Flexible(
+                child: Text(
+                  price,
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                    fontSize: MediaQuery.of(context).size.width < 600 ? 24 : 28,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (period.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    period,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      period,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
             ],
           ),
           const SizedBox(height: 4),
-          Text(detail, style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            detail,
+            style: Theme.of(context).textTheme.bodyMedium,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
           const SizedBox(height: 16),
           ...features.map(
             (feature) => Padding(
@@ -551,6 +662,8 @@ class _PlanCard extends StatelessWidget {
                     child: Text(
                       feature,
                       style: Theme.of(context).textTheme.bodyLarge,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
                   ),
                 ],
@@ -600,16 +713,27 @@ class _AddOnCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: Theme.of(context).textTheme.labelLarge),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.labelLarge,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
           const SizedBox(height: 12),
           Text(
             price,
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
               fontSize: MediaQuery.of(context).size.width < 600 ? 24 : 28,
             ),
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
-          Text(description, style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            description,
+            style: Theme.of(context).textTheme.bodyMedium,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
           const SizedBox(height: 16),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -624,6 +748,8 @@ class _AddOnCard extends StatelessWidget {
                 child: Text(
                   benefit,
                   style: Theme.of(context).textTheme.bodyLarge,
+                  overflow: TextOverflow.visible,
+                  maxLines: 3,
                 ),
               ),
             ],
