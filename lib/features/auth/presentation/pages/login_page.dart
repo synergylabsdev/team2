@@ -4,6 +4,7 @@ import 'package:team2/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:team2/features/auth/presentation/cubit/auth_state.dart';
 import 'package:team2/features/auth/presentation/pages/home_page.dart';
 import 'package:team2/features/auth/presentation/pages/register_page.dart';
+import 'package:team2/features/subscriptions/presentation/pages/subscription_page.dart';
 
 class LoginPage extends StatefulWidget {
   final String role;
@@ -139,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const HomePage(),
+                            builder: (context) => const SubscriptionPage(),
                           ),
                           (route) => false,
                         );
