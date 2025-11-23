@@ -406,17 +406,11 @@ class _PlanCard extends StatelessWidget {
                     size: 20,
                   ),
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      feature,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ),
+                  Text(feature, style: Theme.of(context).textTheme.bodyLarge),
                 ],
               ),
             ),
           ),
-          const Spacer(),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
@@ -477,15 +471,9 @@ class _AddOnCard extends StatelessWidget {
                 size: 20,
               ),
               const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  benefit,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ),
+              Text(benefit, style: Theme.of(context).textTheme.bodyLarge),
             ],
           ),
-          const Spacer(),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
